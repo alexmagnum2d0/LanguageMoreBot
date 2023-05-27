@@ -117,8 +117,9 @@ class Contents(Base):
 class ContentsContTags(Base):
     __tablename__ = 'ContentsContTags'
 
-    cont_id = Column(Integer, ForeignKey('Contents.cont_id'), primary_key=True)
-    ctag_id = Column(Integer, ForeignKey('ContTags.ctag_id'), primary_key=True)
+    cctag = Column(Integer, primary_key=True, autoincrement=True)
+    cont_id = Column(Integer, ForeignKey('Contents.cont_id'), nullable=False)
+    ctag_id = Column(Integer, ForeignKey('ContTags.ctag_id'), nullable=False)
 
 
 
@@ -153,8 +154,8 @@ class Plans(Base):
     plan_id = Column(Integer, primary_key=True, autoincrement=True)
     plan_name = Column(String, nullable=False, unique=True)
 
-class PlansTranslations(Base):
-    __tablename__ = 'PlansTranslations'
+class PlansTranslates(Base):
+    __tablename__ = 'PlansTranslates'
 
     plan_id = Column(Integer, ForeignKey('Plans.plan_id'), primary_key=True)
     lang_id = Column(Integer, ForeignKey('Languages.lang_id'), primary_key=True)
@@ -171,8 +172,9 @@ class PlanPrices(Base):
 class PlanLimits(Base):
     __tablename__ = 'PlanLimits'
 
-    plan_id = Column(Integer, ForeignKey('Plans.plan_id'), primary_key=True)
-    cont_id = Column(Integer, ForeignKey('Contents.cont_id'), primary_key=True)
+    plimit_id = Column(Integer, primary_key=True, autoincrement=True)
+    plan_id = Column(Integer, ForeignKey('Plans.plan_id'), nullable=False)
+    cont_id = Column(Integer, ForeignKey('Contents.cont_id'), nullable=False)
     plimit_value = Column(Integer, nullable=False)
 
 class PlanLimitDescrTranslates(Base):
