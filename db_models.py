@@ -145,7 +145,7 @@ class Questions(Base):
 
     qn_id = Column(Integer, primary_key=True)
     cont_id = Column(Integer, ForeignKey('Contents.cont_id'), nullable=False)
-    qn_content = Column(Text, nullable=False)
+    qn_cont = Column(Text, nullable=False)
     qtype_id = Column(Integer, ForeignKey('QnTypes.qtype_id'))
     qdepth_id = Column(Integer, ForeignKey('QnDepths.qdepth_id'))
 
@@ -214,8 +214,8 @@ class UsersSettings(Base):
     csize_id = Column(Integer, ForeignKey('ContSizes.csize_id'), nullable=False)
     user_interest = Column(Text)
 
-class UsersContentTags(Base):
-    __tablename__ = 'UsersContentTags'
+class UsersContTags(Base):
+    __tablename__ = 'UsersContTags'
 
     user_id = Column(Integer, ForeignKey('Users.user_id'), primary_key=True)
     ctag_id = Column(Integer, ForeignKey('ContTags.ctag_id'), primary_key=True)
