@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -209,7 +209,7 @@ class UsersRegistrations(Base):
     __tablename__ = 'UsersRegistrations'
 
     user_id = Column(Integer, ForeignKey('Users.user_id'), nullable=False)
-    ureg_date = Column(String, nullable=False)
+    ureg_date = Column(DateTime, nullable=False)
 
     user = relationship('Users', back_populates='registrations')
 
@@ -234,7 +234,7 @@ class UsersContTags(Base):
     user_id = Column(Integer, ForeignKey('Users.user_id'), primary_key=True)
     ctag_id = Column(Integer, ForeignKey('ContTags.ctag_id'), primary_key=True)
 
-    user = relationship('Users', back_populates='settings')
+    user = relationship('Users', back_populates='cont_tags')
 
 class UsersPayments(Base):
     __tablename__ = 'UsersPayments'
@@ -242,11 +242,11 @@ class UsersPayments(Base):
     user_id = Column(Integer, ForeignKey('Users.user_id'), primary_key=True)
     plan_id = Column(Integer, ForeignKey('Plans.plan_id'), primary_key=True)
     upay_iter = Column(Integer, primary_key=True)
-    upay_date = Column(String, nullable=False)
+    upay_date = Column(DateTime, nullable=False)
     currency = Column(String, nullable=False)
     payment_value = Column(Float, nullable=False)
 
-    user = relationship('Users', back_populates='settings')
+    user = relationship('Users', back_populates='payments')
 
 class UserLimits(Base):
     __tablename__ = 'UserLimits'
@@ -255,7 +255,7 @@ class UserLimits(Base):
     ctype_id = Column(Integer, ForeignKey('ContTypes.ctype_id'), primary_key=True)
     ulimit_value = Column(Integer, nullable=False)
 
-    user = relationship('Users', back_populates='settings')
+    user = relationship('Users', back_populates='limits')
 
 class UserContents(Base):
     __tablename__ = 'UserContents'
@@ -263,11 +263,11 @@ class UserContents(Base):
     user_id = Column(Integer, ForeignKey('Users.user_id'), primary_key=True)
     cont_id = Column(Integer, ForeignKey('Contents.cont_id'), primary_key=True)
     ucont_iter = Column(Integer, primary_key=True)
-    cont_send_date = Column(String, nullable=False)
+    cont_send_date = Column(DateTime, nullable=False)
     cont_difficult_rate = Column(Integer, nullable=True)
     cont_interest_rate = Column(Integer, nullable=True)
 
-    user = relationship('Users', back_populates='settings')
+    user = relationship('Users', back_populates='contents')
 
 class UserResponses(Base):
     __tablename__ = 'UserPractices'
@@ -275,11 +275,11 @@ class UserResponses(Base):
     user_id = Column(Integer, ForeignKey('Users.user_id'), primary_key=True)
     pract_id = Column(Integer, ForeignKey('Practices.pract_id'), primary_key=True)
     uresp_iter = Column(Integer, primary_key=True)
-    pract_send_time = Column(String, nullable=False)
+    pract_send_time = Column(DateTime, nullable=False)
     uresp_cont = Column(String, nullable=True)
-    uresp_resp_time = Column(String, nullable=True)
+    uresp_resp_time = Column(DateTime, nullable=True)
     uresp_correct = Column(String, nullable=True)
     gpt_resp = Column(String, nullable=True)
-    gpt_resp_time = Column(String, nullable=True)
+    gpt_resp_time = Column(DateTime, nullable=True)
 
     user = relationship('Users', back_populates='practices')
