@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, Text, DateTime, ForeignKey
+from datetime import datetime
+from sqlalchemy import Column, Enum, Integer, String, Float, Text, DateTime, ForeignKey, CheckConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -134,12 +135,6 @@ class PractTypesTranslates(Base):
     lang_id = Column(Integer, ForeignKey('Languages.lang_id'), primary_key=True)
     pttrans_cont = Column(String, nullable=True)
 
-class PractDepths(Base):
-    __tablename__ = 'PractDepths'
-
-    pdepth_id = Column(Integer, primary_key=True)
-    pdepth_name = Column(String, nullable=False, unique=True)
-
 class Practices(Base):
     __tablename__ = 'Practices'
 
@@ -147,7 +142,7 @@ class Practices(Base):
     cont_id = Column(Integer, ForeignKey('Contents.cont_id'), nullable=False)
     pract_cont = Column(Text, nullable=False)
     ptype_id = Column(Integer, ForeignKey('PractTypes.ptype_id'), nullable=True)
-    pdepth_id = Column(Integer, ForeignKey('PractDepths.pdepth_id'), nullable=True)
+    pract_depth = Column(Enum('Remember', 'Understand', 'Apply', 'Analyze', 'Evaluate', 'Create', name='pract_depth'), nullable=True)
 
 
 
@@ -170,7 +165,7 @@ class PlanPrices(Base):
 
     pprice_id = Column(Integer, primary_key=True)
     plan_id = Column(Integer, ForeignKey('Plans.plan_id'), nullable=False)
-    currency = Column(String, nullable=False)
+    pprice_currency = Column(Enum('USD', 'EUR', 'RUB', name='pprice_currency'), nullable=False)
     pprice_value = Column(Float, nullable=True)
 
 class PlanLimits(Base):
@@ -209,7 +204,7 @@ class UsersRegistrations(Base):
     __tablename__ = 'UsersRegistrations'
 
     user_id = Column(Integer, ForeignKey('Users.user_id'), nullable=False)
-    ureg_date = Column(DateTime, nullable=False)
+    ureg_time = Column(DateTime, default=datetime.now, nullable=False)
 
     user = relationship('Users', back_populates='registrations')
 
@@ -242,8 +237,8 @@ class UsersPayments(Base):
     user_id = Column(Integer, ForeignKey('Users.user_id'), primary_key=True)
     plan_id = Column(Integer, ForeignKey('Plans.plan_id'), primary_key=True)
     upay_iter = Column(Integer, primary_key=True)
-    upay_date = Column(DateTime, nullable=False)
-    currency = Column(String, nullable=False)
+    upay_time = Column(DateTime, nullable=False)
+    upay_currency = Column(Enum('USD', 'EUR', 'RUB', name='upay_currency'), nullable=False)
     payment_value = Column(Float, nullable=False)
 
     user = relationship('Users', back_populates='payments')
@@ -263,9 +258,10 @@ class UserContents(Base):
     user_id = Column(Integer, ForeignKey('Users.user_id'), primary_key=True)
     cont_id = Column(Integer, ForeignKey('Contents.cont_id'), primary_key=True)
     ucont_iter = Column(Integer, primary_key=True)
-    cont_send_date = Column(DateTime, nullable=False)
-    cont_difficult_rate = Column(Integer, nullable=True)
-    cont_interest_rate = Column(Integer, nullable=True)
+    cont_send_time = Column(DateTime, default=datetime.now, nullable=False)
+    cont_difficult_rate = Column(Integer, CheckConstraint('cont_difficult_rate>=1 AND cont_difficult_rate<=3'), nullable=True)
+    cont_interest_rate = Column(Integer, CheckConstraint('cont_interest_rate>=1 AND cont_interest_rate<=3'), nullable=True)
+
 
     user = relationship('Users', back_populates='contents')
 
@@ -275,11 +271,11 @@ class UserResponses(Base):
     user_id = Column(Integer, ForeignKey('Users.user_id'), primary_key=True)
     pract_id = Column(Integer, ForeignKey('Practices.pract_id'), primary_key=True)
     uresp_iter = Column(Integer, primary_key=True)
-    pract_send_time = Column(DateTime, nullable=False)
+    pract_send_time = Column(DateTime, default=datetime.now, nullable=False)
     uresp_cont = Column(String, nullable=True)
-    uresp_resp_time = Column(DateTime, nullable=True)
+    uresp_resp_time = Column(DateTime, default=datetime.now, nullable=True)
     uresp_correct = Column(String, nullable=True)
     gpt_resp = Column(String, nullable=True)
-    gpt_resp_time = Column(DateTime, nullable=True)
+    gpt_resp_time = Column(DateTime, default=datetime.now, nullable=True)
 
     user = relationship('Users', back_populates='practices')
